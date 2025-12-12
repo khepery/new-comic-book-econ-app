@@ -2498,6 +2498,171 @@
             box-shadow: 0 0 8px rgba(0, 255, 0, 0.6);
         }
 
+        /* COMIC PANEL STYLES */
+        .story-view-switch {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .story-view-btn {
+            padding: 10px 20px;
+            background: var(--background-light);
+            border: 2px solid var(--border-color);
+            color: var(--primary-bright);
+            font-family: inherit;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .story-view-btn:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-bright);
+        }
+
+        .story-view-btn.active {
+            background: var(--primary-bright);
+            color: var(--background);
+            border-color: var(--primary-bright);
+            font-weight: bold;
+        }
+
+        .comic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            padding: 10px;
+        }
+
+        .comic-panel {
+            border: 3px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--background-light);
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 255, 0, 0.2);
+        }
+
+        .comic-panel-stage {
+            position: relative;
+            width: 100%;
+            padding-top: 66.67%; /* 3:2 aspect ratio */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #111;
+        }
+
+        .comic-bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #000;
+            border-radius: 12px;
+            padding: 8px 12px;
+            max-width: 45%;
+            font-size: 13px;
+            line-height: 1.4;
+            color: #000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .comic-bubble::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border: 8px solid transparent;
+        }
+
+        .bubble-top_left {
+            top: 5%;
+            left: 5%;
+        }
+
+        .bubble-top_left::after {
+            border-top-color: #fff;
+            border-left-color: #fff;
+            bottom: -12px;
+            left: 10px;
+        }
+
+        .bubble-top_right {
+            top: 5%;
+            right: 5%;
+        }
+
+        .bubble-top_right::after {
+            border-top-color: #fff;
+            border-right-color: #fff;
+            bottom: -12px;
+            right: 10px;
+        }
+
+        .bubble-bottom_left {
+            bottom: 5%;
+            left: 5%;
+        }
+
+        .bubble-bottom_left::after {
+            border-bottom-color: #fff;
+            border-left-color: #fff;
+            top: -12px;
+            left: 10px;
+        }
+
+        .bubble-bottom_right {
+            bottom: 5%;
+            right: 5%;
+        }
+
+        .bubble-bottom_right::after {
+            border-bottom-color: #fff;
+            border-right-color: #fff;
+            top: -12px;
+            right: 10px;
+        }
+
+        .bubble-center {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 60%;
+        }
+
+        .bubble-speaker {
+            font-weight: bold;
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .bubble-en {
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .bubble-zh {
+            font-size: 12px;
+            color: #555;
+            font-style: italic;
+        }
+
+        .comic-caption {
+            padding: 12px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            background: var(--background-lighter);
+        }
+
+        .caption-zh {
+            margin-top: 4px;
+            font-style: italic;
+        }
+
         /* CONTAINER QUERY GRIDS */
         .grid-container {
             display: grid;
@@ -6260,6 +6425,57 @@
                     <div style="font-size: 11px; color: #888; margin-top: 8px;">
                         📝 20 min = 2 frames, 2 definitions, 2 tasks, 3 MCQs<br>
                         📚 40 min = 4 frames, 4 definitions, 4 tasks, 5 MCQs
+                    </div>
+                </div>
+
+                <!-- Comic Story Options -->
+                <div style="margin-bottom: var(--space-4); padding: var(--space-3); border: 1px solid rgba(0,255,0,0.25); border-radius: 6px; background: rgba(0,255,0,0.03);">
+                    <label style="display: block; color: var(--primary-bright); margin-bottom: var(--space-2); font-size: var(--text-sm); font-weight: bold;">
+                        🎭 Story Presentation | 故事呈现:
+                    </label>
+
+                    <div style="display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: center;">
+                        <label style="display:flex; align-items:center; gap:10px; padding:10px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                            <input type="checkbox" id="aiComicMode" checked style="accent-color:#00FF00; width:18px; height:18px;">
+                            <span>Comic panels with speech bubbles | 漫画分镜</span>
+                        </label>
+
+                        <label style="display:flex; align-items:center; gap:10px; padding:10px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                            <span style="font-size: 12px; color:#88ffbb;">Quality</span>
+                            <select id="aiImageQuality" style="background:#000; color:#00FF00; border:1px solid #00FF00; border-radius: 6px; padding:6px 8px;">
+                                <option value="low" selected>low</option>
+                                <option value="medium">medium</option>
+                                <option value="high">high</option>
+                            </select>
+                        </label>
+
+                        <label style="display:flex; align-items:center; gap:10px; padding:10px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                            <span style="font-size: 12px; color:#88ffbb;">Size</span>
+                            <select id="aiImageSize" style="background:#000; color:#00FF00; border:1px solid #00FF00; border-radius: 6px; padding:6px 8px;">
+                                <option value="1536x1024" selected>1536x1024</option>
+                                <option value="1024x1024">1024x1024</option>
+                                <option value="1024x1536">1024x1536</option>
+                            </select>
+                        </label>
+
+                        <label style="display:flex; align-items:center; gap:10px; padding:10px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                            <input type="checkbox" id="aiGenerateImagesNow" checked style="accent-color:#00FF00; width:18px; height:18px;">
+                            <span>Generate images now | 立即生成图片</span>
+                        </label>
+                    </div>
+
+                    <div style="margin-top: var(--space-2); font-size: 11px; color: #88ffbb;">
+                        Images contain no text. Speech bubbles are HTML overlays so keywords stay clickable.
+                    </div>
+
+                    <div style="margin-top: var(--space-3);">
+                        <label for="openaiImageKey" style="display:block; color: var(--primary-bright); margin-bottom: 6px; font-size: 12px;">
+                            🔑 OpenAI key for images | 图片用 OpenAI Key:
+                        </label>
+                        <input type="password" id="openaiImageKey" placeholder="sk-..." style="width:100%; padding: 10px 12px; background:#000; border: 1px solid #00FF00; color:#00FF00; border-radius: 6px; font-family: inherit;">
+                        <div style="margin-top: 6px; font-size: 11px; color:#88ffbb;">
+                            If empty and you use OpenAI for text, the app will reuse the main key.
+                        </div>
                     </div>
                 </div>
 
@@ -10218,6 +10434,10 @@ IMPORTANT RULES:
             ANTHROPIC_API_URL: 'https://api.anthropic.com/v1/messages',
             ANTHROPIC_MODEL: 'claude-sonnet-4-20250514',
             
+            // OpenAI Image API for comic panels
+            OPENAI_IMAGE_API_URL: 'https://api.openai.com/v1/images/generations',
+            OPENAI_IMAGE_MODEL: 'gpt-image-1',
+            
             // Local LLM fallback (kept for compatibility but not used)
             LOCAL_LLM_URL: 'http://127.0.0.1:8080',
             LOCAL_COMPLETIONS_ENDPOINT: '/v1/chat/completions',
@@ -10778,7 +10998,7 @@ IMPORTANT RULES:
             return truncated.slice(0, cutPoint + 1) + '\n...[additional content available in source document]';
         }
 
-        function buildSystemPrompt(topic, duration) {
+        function buildSystemPrompt(topic, duration, options = {}) {
             const is20min = duration === 20;
             const numFrames = is20min ? 3 : 5;
             const numMCQs = is20min ? 3 : 5;
@@ -10787,6 +11007,44 @@ IMPORTANT RULES:
             const storyWordCount = is20min ? 100 : 200;  // Story length limit
             const totalBlanks = numFrames * 2;
             const MIN_KEYWORDS = 5;  // Absolute minimum - never less than this
+            
+            const comicMode = !!options.comicMode;
+            const numPanels = options.numPanels || (duration === 20 ? 3 : 5);
+
+            const comicSpec = comicMode ? `
+
+=== COMIC STORY MODE RULES ===
+You must still return story.text and story.text_zh as plain paragraphs for backup and export.
+
+In story you MUST add:
+"presentation": "comic"
+"comic": {
+  "style_guide": "1 short paragraph that locks the art style and recurring characters",
+  "characters": [
+    {"name":"...", "role":"teen or teacher", "visual":"clothes, hair, signature item"}
+  ],
+  "panels": [
+    {
+      "id":"p1",
+      "prompt":"Panel art prompt. No text. No speech bubbles. Classroom safe.",
+      "caption_en":"One short caption",
+      "caption_zh":"一条短中文说明",
+      "bubbles":[
+        {"speaker":"...", "pos":"top_left", "text_en":"...", "text_zh":"..."},
+        {"speaker":"...", "pos":"bottom_right", "text_en":"...", "text_zh":"..."}
+      ]
+    }
+  ]
+}
+
+Panel rules:
+1. Exactly ${numPanels} panels
+2. Each panel has 2 to 4 bubbles
+3. Bubble pos must be one of: top_left, top_right, bottom_left, bottom_right, center
+4. Bubble text must naturally include the SAME economics keywords you define in story.keywords
+5. Do not add any HTML. Use plain text only.
+6. Image prompts must contain NO text instructions like "add caption" or "speech bubble text"
+` : "";
             
             return `You are an expert economics teacher creating lessons FROM PROVIDED REFERENCE CONTENT. Output ONLY valid JSON.
 
@@ -10826,7 +11084,7 @@ Generate a ${duration}-minute economics lesson about "${topic}":
   "mcqs": [{"question_en": "?", "question_zh": "？", "options_en": ["A","B","C","D"], "options_zh": ["甲","乙","丙","丁"], "correct": 0, "explanation_en": "Why correct/wrong", "explanation_zh": "解释"}],
   "summary": [{"title": "Point", "title_zh": "要点", "description": "...", "description_zh": "..."}]
 }
-
+${comicSpec}
 === 📖 STORY RULES - LOGICAL KEYWORD INTEGRATION ===
 
 🚨🚨🚨 CRITICAL KEYWORD REQUIREMENT 🚨🚨🚨
@@ -10915,7 +11173,7 @@ COUNTS (STRICT REQUIREMENTS):
 OUTPUT ONLY JSON. Start with { end with }`;
         }
 
-        function buildUserPrompt(topic, fileText, duration, pastedExcerpt) {
+        function buildUserPrompt(topic, fileText, duration, pastedExcerpt, options = {}) {
             // Use more of the extracted content
             const truncated = truncatePdfText(fileText, 12000);
             const pasted = (pastedExcerpt || '').trim();
@@ -10925,6 +11183,8 @@ OUTPUT ONLY JSON. Start with { end with }`;
             const numMCQs = is20min ? 3 : 5;
             const numKeywords = is20min ? 5 : 7;  // MINIMUM 5 keywords, always!
             const MIN_KEYWORDS = 5;  // Absolute minimum - never less than this
+            const comicMode = !!options.comicMode;
+            const numPanels = options.numPanels || (duration === 20 ? 3 : 5);
             
             // Determine if we're in paste-only mode (no file text, only pasted content)
             const isPasteOnlyMode = (!truncated || truncated.length < 100) && pasted && pasted.length > 50;
@@ -11281,7 +11541,7 @@ ${previousResponse.slice(0, 1500)}`;
             return fallbacks;
         }
 
-        async function requestLessonFromAI({ topic, fileText, duration, pastedExcerpt }) {
+        async function requestLessonFromAI({ topic, fileText, duration, pastedExcerpt, comicMode }) {
             const config = getProviderConfig();
             const providerInfo = describeProvider(config);
             console.log('[AI GENERATOR] Sending request to:', providerInfo.long);
@@ -11294,6 +11554,7 @@ ${previousResponse.slice(0, 1500)}`;
                 saveAPIKey(config.apiKey);
             }
 
+            const numPanels = duration === 20 ? 3 : 5;
             const maxAttempts = AI_GENERATOR_CONFIG.MAX_LLM_RETRIES || 3;
             let lastRawResponse = '';
             let useJsonMode = false; // FIX: Start without JSON mode - it's too strict and causes failures
@@ -11302,8 +11563,8 @@ ${previousResponse.slice(0, 1500)}`;
                 console.log(`[AI GENERATOR] Attempt ${attempt}/${maxAttempts}, JSON mode: ${useJsonMode}`);
                 
                 const messages = [
-                    { role: 'system', content: buildSystemPrompt(topic, duration) },
-                    { role: 'user', content: buildUserPrompt(topic, fileText, duration, pastedExcerpt) }
+                    { role: 'system', content: buildSystemPrompt(topic, duration, { comicMode, numPanels }) },
+                    { role: 'user', content: buildUserPrompt(topic, fileText, duration, pastedExcerpt, { comicMode, numPanels }) }
                 ];
 
                 if (attempt > 1) {
@@ -11445,6 +11706,239 @@ Output ONLY the JSON object now:`
             return wrapped;
         }
 
+        // ===== COMIC PANEL HELPER FUNCTIONS =====
+
+        function escapeHtml(s) {
+            if (!s) return '';
+            return String(s)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function getOpenAIImageKeyForComic() {
+            // First check dedicated image key
+            let key = localStorage.getItem('openaiImageKey');
+            if (key && key.trim()) return key.trim();
+            
+            // Fallback to main OpenAI key if provider is OpenAI
+            const provider = document.querySelector('input[name="aiProvider"]:checked')?.value;
+            if (provider === 'openai') {
+                key = localStorage.getItem('groqApiKey') || ''; // groqApiKey stores all provider keys
+                if (key && key.trim()) return key.trim();
+            }
+            
+            return null;
+        }
+
+        function prepareComicStory(story) {
+            if (!story || !story.comic || !Array.isArray(story.comic.panels)) return;
+            
+            const keywords = story.keywords || {};
+            
+            // Wrap keywords in bubble text
+            story.comic.panels.forEach(panel => {
+                if (!Array.isArray(panel.bubbles)) return;
+                panel.bubbles.forEach(bubble => {
+                    if (bubble.text_en) {
+                        bubble.text_en = wrapStoryKeywords(bubble.text_en, keywords);
+                    }
+                    if (bubble.text_zh) {
+                        bubble.text_zh = wrapStoryKeywords(bubble.text_zh, keywords);
+                    }
+                });
+            });
+        }
+
+        function buildComicPanelHTML(story) {
+            if (!story || !story.comic || !Array.isArray(story.comic.panels)) {
+                return '<div class="story-text">No comic data available.</div>';
+            }
+            
+            const panels = story.comic.panels;
+            let html = '<div class="comic-grid">';
+            
+            panels.forEach((panel, idx) => {
+                const imgUrl = panel.imageUrl || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzIyMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmb250LXNpemU9IjE0IiBmaWxsPSIjMDBmZjAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj5QYW5lbCAnICsgKGlkeCArIDEpICsgJzwvdGV4dD48L3N2Zz4=';
+                
+                html += `<div class="comic-panel">`;
+                html += `<div class="comic-panel-stage" style="background-image: url('${imgUrl}');">`;
+                
+                // Add speech bubbles
+                if (Array.isArray(panel.bubbles)) {
+                    panel.bubbles.forEach(bubble => {
+                        const pos = bubble.pos || 'center';
+                        const speaker = escapeHtml(bubble.speaker || '');
+                        const textEn = bubble.text_en || '';
+                        const textZh = bubble.text_zh || '';
+                        
+                        html += `<div class="comic-bubble bubble-${pos}">`;
+                        if (speaker) {
+                            html += `<div class="bubble-speaker">${escapeHtml(speaker)}</div>`;
+                        }
+                        html += `<div class="bubble-en">${textEn}</div>`;
+                        if (textZh) {
+                            html += `<div class="bubble-zh">${textZh}</div>`;
+                        }
+                        html += `</div>`;
+                    });
+                }
+                
+                html += `</div>`; // close stage
+                
+                // Add caption below panel
+                if (panel.caption_en || panel.caption_zh) {
+                    html += `<div class="comic-caption">`;
+                    if (panel.caption_en) html += `<div>${escapeHtml(panel.caption_en)}</div>`;
+                    if (panel.caption_zh) html += `<div class="caption-zh">${escapeHtml(panel.caption_zh)}</div>`;
+                    html += `</div>`;
+                }
+                
+                html += `</div>`; // close panel
+            });
+            
+            html += '</div>'; // close grid
+            return html;
+        }
+
+        // ===== IMAGE GENERATION WITH CACHING =====
+
+        async function sha256Hex(input) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(input);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function openComicDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open('econoComicCacheV1', 1);
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => resolve(request.result);
+                request.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains('images')) {
+                        db.createObjectStore('images', { keyPath: 'key' });
+                    }
+                };
+            });
+        }
+
+        async function comicCacheGet(key) {
+            try {
+                const db = await openComicDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction('images', 'readonly');
+                    const store = tx.objectStore('images');
+                    const req = store.get(key);
+                    req.onsuccess = () => resolve(req.result?.value || null);
+                    req.onerror = () => reject(req.error);
+                });
+            } catch (err) {
+                console.warn('[Comic Cache] Get failed:', err);
+                return null;
+            }
+        }
+
+        async function comicCacheSet(key, value) {
+            try {
+                const db = await openComicDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction('images', 'readwrite');
+                    const store = tx.objectStore('images');
+                    const req = store.put({ key, value });
+                    req.onsuccess = () => resolve();
+                    req.onerror = () => reject(req.error);
+                });
+            } catch (err) {
+                console.warn('[Comic Cache] Set failed:', err);
+            }
+        }
+
+        async function openaiGenerateImageDataUrl(prompt, size, quality) {
+            const apiKey = getOpenAIImageKeyForComic();
+            if (!apiKey) {
+                throw new Error('No OpenAI API key found. Please provide one in the comic options.');
+            }
+            
+            const url = AI_GENERATOR_CONFIG.OPENAI_IMAGE_API_URL;
+            const model = AI_GENERATOR_CONFIG.OPENAI_IMAGE_MODEL;
+            
+            const body = {
+                model: model,
+                prompt: prompt,
+                n: 1,
+                size: size,
+                quality: quality,
+                response_format: 'b64_json'
+            };
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify(body)
+            });
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('[OpenAI Image] Error:', errorText);
+                throw new Error(`OpenAI Image API error: ${response.status} ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            if (!data.data || !data.data[0] || !data.data[0].b64_json) {
+                throw new Error('Invalid response from OpenAI Image API');
+            }
+            
+            return `data:image/png;base64,${data.data[0].b64_json}`;
+        }
+
+        function buildPanelArtPrompt(styleGuide, panel) {
+            let prompt = styleGuide ? `${styleGuide}. ` : '';
+            prompt += panel.prompt || 'A classroom scene.';
+            prompt += ' No text, no speech bubbles, no captions in the image. Classroom appropriate content only.';
+            return prompt;
+        }
+
+        async function ensureComicImages({ story, size, quality, onProgress }) {
+            if (!story || !story.comic || !Array.isArray(story.comic.panels)) return;
+            
+            const panels = story.comic.panels;
+            const styleGuide = story.comic.style_guide || '';
+            const total = panels.length;
+            let done = 0;
+            
+            for (const panel of panels) {
+                // Build cache key
+                const artPrompt = buildPanelArtPrompt(styleGuide, panel);
+                const cacheKey = await sha256Hex(`${artPrompt}|${size}|${quality}`);
+                
+                // Check cache
+                let dataUrl = await comicCacheGet(cacheKey);
+                let fromCache = !!dataUrl;
+                
+                if (!dataUrl) {
+                    // Generate new image
+                    dataUrl = await openaiGenerateImageDataUrl(artPrompt, size, quality);
+                    await comicCacheSet(cacheKey, dataUrl);
+                    fromCache = false;
+                }
+                
+                panel.imageUrl = dataUrl;
+                done++;
+                
+                if (onProgress) {
+                    onProgress(done, total, fromCache);
+                }
+            }
+        }
+
         function ensureFrameTextHasBlanks(frameText, blanks) {
             let result = frameText || '';
             if (!Array.isArray(blanks) || blanks.length === 0) return result;
@@ -11574,11 +12068,15 @@ Output ONLY the JSON object now:`
             const storyKeywords = storyData.keywords || {};
             const storyTextRaw = storyData.text || 'No story content generated.';
             lessonConfig.story = {
+                presentation: storyData.presentation || (storyData.comic ? "comic" : "text"),
                 text: wrapStoryKeywords(storyTextRaw, storyKeywords),
                 text_zh: storyData.text_zh || '',
                 images: storyData.images || [],
-                keywords: storyKeywords
+                keywords: storyKeywords,
+                comic: storyData.comic || null
             };
+            
+            prepareComicStory(lessonConfig.story);
             
             console.log('[AI GENERATOR] Story keywords:', Object.keys(lessonConfig.story.keywords).length);
             
@@ -11770,6 +12268,18 @@ Output ONLY the JSON object now:`
                 saveAPIKey(keyInput.value);
             }
 
+            // Read comic options
+            const comicMode = !!document.getElementById("aiComicMode")?.checked;
+            const generateImagesNow = !!document.getElementById("aiGenerateImagesNow")?.checked;
+            const imageQuality = document.getElementById("aiImageQuality")?.value || "low";
+            const imageSize = document.getElementById("aiImageSize")?.value || "1536x1024";
+            
+            // Save OpenAI image key if provided
+            const openaiImageKey = document.getElementById('openaiImageKey')?.value;
+            if (openaiImageKey) {
+                localStorage.setItem('openaiImageKey', openaiImageKey);
+            }
+
             try {
                 closeAIGeneratorModal();
 
@@ -11813,7 +12323,8 @@ Output ONLY the JSON object now:`
                     topic,
                     fileText: usePasteOnly ? '' : fileText,  // Empty if paste-only mode
                     duration,
-                    pastedExcerpt: usePasteOnly ? pastedContent : pastedContent  // Always pass pasted content
+                    pastedExcerpt: usePasteOnly ? pastedContent : pastedContent,  // Always pass pasted content
+                    comicMode
                 });
 
                 // Basic validation
@@ -11831,10 +12342,39 @@ Output ONLY the JSON object now:`
 
                 applyGeneratedLesson(generatedLesson, topic);
 
+                // Step 6: Generate comic images if requested
+                const comicRequested = !!document.getElementById("aiComicMode")?.checked;
+                const generateImagesNowCheck = !!document.getElementById("aiGenerateImagesNow")?.checked;
+
+                if (comicRequested && generateImagesNowCheck && lessonConfig?.story?.presentation === "comic") {
+                    updateModalContent(
+                        `🎨 Step 6/6: Generating comic panel images...\n` +
+                        `This uses OpenAI image API and may take a moment.`
+                    );
+
+                    const size = document.getElementById("aiImageSize")?.value || "1536x1024";
+                    const quality = document.getElementById("aiImageQuality")?.value || "low";
+
+                    await ensureComicImages({
+                        story: lessonConfig.story,
+                        size,
+                        quality,
+                        onProgress: (done, total, fromCache) => {
+                            updateModalContent(
+                                `🎨 Step 6/6: Generating comic panel images...\n` +
+                                `Panels: ${done}/${total}\n` +
+                                `${fromCache ? "Using cache" : "Generated new"}`
+                            );
+                        }
+                    });
+
+                    renderStoryScene();
+                }
+
                 const durationLabel = generatedLesson.metadata?.duration || duration;
                 const finalKeywordCount = Object.keys(lessonConfig.story?.keywords || {}).length;
                 updateModalContent(
-                    `✅ Step 5/5: Lesson ready!\n` +
+                    `✅ Step ${comicRequested && generateImagesNowCheck ? '6/6' : '5/5'}: Lesson ready!\n` +
                     `📚 ${lessonConfig.title || topic}\n` +
                     `⏱️ Duration: ${durationLabel} min\n` +
                     `📎 Source: ${safeFileName}\n` +
@@ -12535,7 +13075,23 @@ Output ONLY the JSON object now:`
                 console.error('[renderStoryScene] storyContainer not found!');
                 return;
             }
-            storyContainer.innerHTML = `<div class="story-text">${lessonConfig.story.text}</div>`;
+
+            const story = lessonConfig.story || {};
+            const hasComic = !!(story.comic && Array.isArray(story.comic.panels) && story.comic.panels.length);
+            const view = hasComic ? (story.presentation || "comic") : "text";
+
+            const switcher = hasComic ? `
+                <div class="story-view-switch">
+                    <button class="story-view-btn ${view === "comic" ? "active" : ""}" onclick="setStoryPresentation('comic')">COMIC</button>
+                    <button class="story-view-btn ${view === "text" ? "active" : ""}" onclick="setStoryPresentation('text')">TEXT</button>
+                </div>
+            ` : "";
+
+            const body = (view === "comic" && hasComic)
+                ? buildComicPanelHTML(story)
+                : `<div class="story-text">${story.text || ""}</div>`;
+
+            storyContainer.innerHTML = `${switcher}${body}`;
 
             // Make inline keywords clickable to open popups (fresh delegation each render)
             storyContainer.onclick = function(e) {
@@ -12562,6 +13118,12 @@ Output ONLY the JSON object now:`
             
             console.log('[renderStoryScene] Render complete');
         }
+
+        window.setStoryPresentation = function(mode) {
+            if (!lessonConfig?.story) return;
+            lessonConfig.story.presentation = mode;
+            renderStoryScene();
+        };
         
         // Update IB Learning Goal Banner with lesson content (IB/Cognia compliant)
         function updateIBMetaCard() {
