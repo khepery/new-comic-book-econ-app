@@ -11548,6 +11548,7 @@ ${previousResponse.slice(0, 1500)}`;
             console.log('[AI GENERATOR] URL:', config.url);
             console.log('[AI GENERATOR] Model:', config.model);
             console.log('[AI GENERATOR] Duration:', duration, 'minutes');
+            console.log('[AI GENERATOR] Comic Mode:', comicMode);
 
             // Save API key for hosted providers
             if (!config.isLocal && config.apiKey) {
@@ -12067,6 +12068,13 @@ Output ONLY the JSON object now:`
             const storyData = generatedLesson.story || generatedLesson.sections?.dataAnalysis || {};
             const storyKeywords = storyData.keywords || {};
             const storyTextRaw = storyData.text || 'No story content generated.';
+            
+            console.log('[AI GENERATOR] Story has comic data:', !!storyData.comic);
+            console.log('[AI GENERATOR] Story presentation:', storyData.presentation);
+            if (storyData.comic) {
+                console.log('[AI GENERATOR] Comic panels count:', storyData.comic.panels?.length || 0);
+            }
+            
             lessonConfig.story = {
                 presentation: storyData.presentation || (storyData.comic ? "comic" : "text"),
                 text: wrapStoryKeywords(storyTextRaw, storyKeywords),
@@ -12273,6 +12281,9 @@ Output ONLY the JSON object now:`
             const generateImagesNow = !!document.getElementById("aiGenerateImagesNow")?.checked;
             const imageQuality = document.getElementById("aiImageQuality")?.value || "low";
             const imageSize = document.getElementById("aiImageSize")?.value || "1536x1024";
+            
+            console.log('[AI GENERATOR] Comic mode checkbox checked:', comicMode);
+            console.log('[AI GENERATOR] Generate images now:', generateImagesNow);
             
             // Save OpenAI image key if provided
             const openaiImageKey = document.getElementById('openaiImageKey')?.value;
