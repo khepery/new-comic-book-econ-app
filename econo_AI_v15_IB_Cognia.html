@@ -11010,41 +11010,6 @@ IMPORTANT RULES:
             
             const comicMode = !!options.comicMode;
             const numPanels = options.numPanels || (duration === 20 ? 3 : 5);
-
-            const comicSpec = comicMode ? `
-
-=== COMIC STORY MODE RULES ===
-You must still return story.text and story.text_zh as plain paragraphs for backup and export.
-
-In story you MUST add:
-"presentation": "comic"
-"comic": {
-  "style_guide": "1 short paragraph that locks the art style and recurring characters",
-  "characters": [
-    {"name":"...", "role":"teen or teacher", "visual":"clothes, hair, signature item"}
-  ],
-  "panels": [
-    {
-      "id":"p1",
-      "prompt":"Panel art prompt. No text. No speech bubbles. Classroom safe.",
-      "caption_en":"One short caption",
-      "caption_zh":"一条短中文说明",
-      "bubbles":[
-        {"speaker":"...", "pos":"top_left", "text_en":"...", "text_zh":"..."},
-        {"speaker":"...", "pos":"bottom_right", "text_en":"...", "text_zh":"..."}
-      ]
-    }
-  ]
-}
-
-Panel rules:
-1. Exactly ${numPanels} panels
-2. Each panel has 2 to 4 bubbles
-3. Bubble pos must be one of: top_left, top_right, bottom_left, bottom_right, center
-4. Bubble text must naturally include the SAME economics keywords you define in story.keywords
-5. Do not add any HTML. Use plain text only.
-6. Image prompts must contain NO text instructions like "add caption" or "speech bubble text"
-` : "";
             
             return `You are an expert economics teacher creating lessons FROM PROVIDED REFERENCE CONTENT. Output ONLY valid JSON.
 
@@ -11065,7 +11030,26 @@ Generate a ${duration}-minute economics lesson about "${topic}":
   },
   "story": {
     "text": "Story with keywords - see STORY RULES below",
-    "text_zh": "中文故事翻译",
+    "text_zh": "中文故事翻译",${comicMode ? `
+    "presentation": "comic",
+    "comic": {
+      "style_guide": "Brief art style description with consistent character appearance",
+      "characters": [
+        {"name":"Emma", "role":"teen", "visual":"casual clothes, backpack"}
+      ],
+      "panels": [
+        {
+          "id":"p1",
+          "prompt":"Scene description. NO TEXT. NO BUBBLES. Classroom appropriate.",
+          "caption_en":"Short scene caption",
+          "caption_zh":"简短场景说明",
+          "bubbles":[
+            {"speaker":"Emma", "pos":"top_left", "text_en":"Economics dialogue with keywords", "text_zh":"经济学对话含关键词"},
+            {"speaker":"Emma", "pos":"bottom_right", "text_en":"More dialogue", "text_zh":"更多对话"}
+          ]
+        }
+      ]
+    },` : ""}
     "keywords": {
       "keyword-id": {
         "en": "Term Name",
@@ -11084,7 +11068,15 @@ Generate a ${duration}-minute economics lesson about "${topic}":
   "mcqs": [{"question_en": "?", "question_zh": "？", "options_en": ["A","B","C","D"], "options_zh": ["甲","乙","丙","丁"], "correct": 0, "explanation_en": "Why correct/wrong", "explanation_zh": "解释"}],
   "summary": [{"title": "Point", "title_zh": "要点", "description": "...", "description_zh": "..."}]
 }
-${comicSpec}
+${comicMode ? `
+🎬 COMIC MODE REQUIREMENTS:
+- Generate EXACTLY ${numPanels} panels in story.comic.panels array
+- Each panel needs 2-4 speech bubbles
+- Bubble positions: top_left, top_right, bottom_left, bottom_right, or center
+- Bubble text MUST include economics keywords naturally
+- Image prompts describe the SCENE ONLY - no text, no speech bubbles
+- Keep it classroom appropriate` : ""}
+
 === 📖 STORY RULES - LOGICAL KEYWORD INTEGRATION ===
 
 🚨🚨🚨 CRITICAL KEYWORD REQUIREMENT 🚨🚨🚨
