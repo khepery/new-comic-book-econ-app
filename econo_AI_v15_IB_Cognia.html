@@ -11885,9 +11885,32 @@ Output ONLY the JSON object now:`
             });
             
             if (!response.ok) {
-                const errorText = await response.text();
-                console.error('[OpenAI Image] Error:', errorText);
-                throw new Error(`OpenAI Image API error: ${response.status} ${response.statusText}`);
+                let errorText = await response.text();
+                let errorDetails = '';
+                try {
+                    const errorJson = JSON.parse(errorText);
+                    errorDetails = errorJson.error?.message || errorText;
+                } catch (e) {
+                    errorDetails = errorText;
+                }
+                console.error('[OpenAI Image] Status:', response.status);
+                console.error('[OpenAI Image] Error details:', errorDetails);
+                
+                // Provide more helpful error messages
+                let userMessage = `OpenAI Image API error (${response.status})`;
+                if (response.status === 500) {
+                    userMessage += ': Server error. OpenAI may be experiencing issues. Try again later.';
+                } else if (response.status === 429) {
+                    userMessage += ': Rate limit exceeded. Wait a moment and try again.';
+                } else if (response.status === 401) {
+                    userMessage += ': Invalid API key. Check your OpenAI key.';
+                } else if (response.status === 400) {
+                    userMessage += ': Bad request. ' + (errorDetails.substring(0, 100));
+                } else {
+                    userMessage += ': ' + errorDetails.substring(0, 100);
+                }
+                
+                throw new Error(userMessage);
             }
             
             const data = await response.json();
@@ -12354,36 +12377,60 @@ Output ONLY the JSON object now:`
                 // Step 6: Generate comic images if requested
                 const comicRequested = !!document.getElementById("aiComicMode")?.checked;
                 const generateImagesNowCheck = !!document.getElementById("aiGenerateImagesNow")?.checked;
+                let imageGenerationFailed = false;
 
                 if (comicRequested && generateImagesNowCheck && lessonConfig?.story?.presentation === "comic") {
-                    updateModalContent(
-                        `🎨 Step 6/6: Generating comic panel images...\n` +
-                        `This uses OpenAI image API and may take a moment.`
-                    );
+                    try {
+                        updateModalContent(
+                            `🎨 Step 6/6: Generating comic panel images...\n` +
+                            `This uses OpenAI image API and may take a moment.`
+                        );
 
-                    const size = document.getElementById("aiImageSize")?.value || "1536x1024";
-                    const quality = document.getElementById("aiImageQuality")?.value || "low";
+                        const size = document.getElementById("aiImageSize")?.value || "1792x1024";
+                        const quality = document.getElementById("aiImageQuality")?.value || "low";
 
-                    await ensureComicImages({
-                        story: lessonConfig.story,
-                        size,
-                        quality,
-                        onProgress: (done, total, fromCache) => {
-                            updateModalContent(
-                                `🎨 Step 6/6: Generating comic panel images...\n` +
-                                `Panels: ${done}/${total}\n` +
-                                `${fromCache ? "Using cache" : "Generated new"}`
-                            );
-                        }
-                    });
+                        await ensureComicImages({
+                            story: lessonConfig.story,
+                            size,
+                            quality,
+                            onProgress: (done, total, fromCache) => {
+                                updateModalContent(
+                                    `🎨 Step 6/6: Generating comic panel images...\n` +
+                                    `Panels: ${done}/${total}\n` +
+                                    `${fromCache ? "Using cache" : "Generated new"}`
+                                );
+                            }
+                        });
 
-                    renderStoryScene();
+                        renderStoryScene();
+                    } catch (imageError) {
+                        console.error('[AI GENERATOR] Image generation failed:', imageError);
+                        imageGenerationFailed = true;
+                        
+                        // Show warning but continue with lesson
+                        updateModalContent(
+                            `⚠️ Image generation failed\n` +
+                            `${imageError.message}\n\n` +
+                            `The lesson is ready but comic images could not be generated.\n` +
+                            `You can:\n` +
+                            `1. Use text mode instead (toggle COMIC/TEXT)\n` +
+                            `2. Try generating images again later\n` +
+                            `3. Check your OpenAI API key and billing\n\n` +
+                            `Continuing with lesson...`
+                        );
+                        
+                        // Wait a moment for user to see the message
+                        await new Promise(resolve => setTimeout(resolve, 3000));
+                        
+                        renderStoryScene();
+                    }
                 }
 
                 const durationLabel = generatedLesson.metadata?.duration || duration;
                 const finalKeywordCount = Object.keys(lessonConfig.story?.keywords || {}).length;
+                const imageWarning = imageGenerationFailed ? '\n⚠️ Note: Comic images failed to generate. Use TEXT mode or try images later.' : '';
                 updateModalContent(
-                    `✅ Step ${comicRequested && generateImagesNowCheck ? '6/6' : '5/5'}: Lesson ready!\n` +
+                    `✅ Step ${comicRequested && generateImagesNowCheck ? '6/6' : '5/5'}: Lesson ready!${imageWarning}\n` +
                     `📚 ${lessonConfig.title || topic}\n` +
                     `⏱️ Duration: ${durationLabel} min\n` +
                     `📎 Source: ${safeFileName}\n` +
