@@ -10436,7 +10436,7 @@ IMPORTANT RULES:
             
             // OpenAI Image API for comic panels
             OPENAI_IMAGE_API_URL: 'https://api.openai.com/v1/images/generations',
-            OPENAI_IMAGE_MODEL: 'gpt-image-1',
+            OPENAI_IMAGE_MODEL: 'dall-e-3',
             
             // Local LLM fallback (kept for compatibility but not used)
             LOCAL_LLM_URL: 'http://127.0.0.1:8080',
@@ -11860,14 +11860,20 @@ Output ONLY the JSON object now:`
             const url = AI_GENERATOR_CONFIG.OPENAI_IMAGE_API_URL;
             const model = AI_GENERATOR_CONFIG.OPENAI_IMAGE_MODEL;
             
+            // Map quality settings to DALL-E 3 format
+            // DALL-E 3 only supports "standard" and "hd"
+            const dalleQuality = (quality === 'high') ? 'hd' : 'standard';
+            
             const body = {
                 model: model,
                 prompt: prompt,
                 n: 1,
                 size: size,
-                quality: quality,
+                quality: dalleQuality,
                 response_format: 'b64_json'
             };
+            
+            console.log('[OpenAI Image] Generating image with:', { model, size, quality: dalleQuality });
             
             const response = await fetch(url, {
                 method: 'POST',
